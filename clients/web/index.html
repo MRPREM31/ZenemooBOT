@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenemoo AI - Web Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <div class="logo-group">
+                <div class="logo-icon">✨</div>
+                <div>
+                    <h1>Zenemoo AI Dashboard</h1>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem;">AI-Powered Image Enhancement Platform Control Center</p>
+                </div>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span id="backend-status-text">Backend Online</span>
+            </div>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="card">
+                <div class="card-title">Total Users</div>
+                <div class="card-value" id="val-users">0</div>
+                <div class="card-subtext">Registered Accounts</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Images Processed</div>
+                <div class="card-value" id="val-images">0</div>
+                <div class="card-subtext">Total Enhancements</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Compute Hardware</div>
+                <div class="card-value" id="val-gpu" style="font-size: 1.4rem;">CPU</div>
+                <div class="card-subtext" id="val-vram">PyTorch Acceleration</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Avg Latency</div>
+                <div class="card-value" id="val-latency">845ms</div>
+                <div class="card-subtext">Processing Speed</div>
+            </div>
+        </div>
+
+        <!-- Telemetry & Storage Grid -->
+        <div class="section-grid">
+            <!-- Hardware Telemetry -->
+            <div class="card">
+                <h3 style="margin-bottom: 1.5rem;">⚡ System Telemetry</h3>
+                <div class="metric-bar-group">
+                    <div class="metric-header">
+                        <span>CPU Usage</span>
+                        <span id="txt-cpu">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="bar-cpu" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <div class="metric-bar-group">
+                    <div class="metric-header">
+                        <span>System RAM</span>
+                        <span id="txt-ram">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="bar-ram" style="width: 0%; background: linear-gradient(90deg, #8b5cf6, #ec4899);"></div>
+                    </div>
+                </div>
+                <div class="metric-bar-group">
+                    <div class="metric-header">
+                        <span>Storage Disk Space</span>
+                        <span id="txt-disk">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="bar-disk" style="width: 0%; background: linear-gradient(90deg, #10b981, #06b6d4);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Breakdown -->
+            <div class="card">
+                <h3 style="margin-bottom: 1.5rem;">📁 Directory Storage Breakdown</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Uploads Directory</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; margin-top: 4px;" id="val-dir-upload">0 MB</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Outputs Directory</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; margin-top: 4px;" id="val-dir-output">0 MB</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Temp Buffer Storage</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; margin-top: 4px;" id="val-dir-temp">0 MB</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Total Platform Size</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; margin-top: 4px; color: var(--accent-cyan);" id="val-dir-total">0 MB</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Jobs Audit Log -->
+            <div class="card table-card">
+                <h3>📜 Recent Image Processing Jobs</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Pipeline Mode</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Latency</th>
+                            <th>Created Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobs-table-body">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-secondary);">Loading live jobs history...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

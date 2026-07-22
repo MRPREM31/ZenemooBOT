@@ -1,0 +1,83 @@
+# ==============================================================================
+# Zenemoo AI - Docker Compose Multi-Container Orchestration
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------------------------
+  # FastAPI REST API Backend & AI Engine Worker
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zenemoo-backend
+    restart: always
+    command: python main.py --api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=postgresql+asyncpg://zenemoo_user:zenemoo_password@db:5432/zenemoo_db
+      - DEVICE=auto
+    volumes:
+      - uploads_data:/app/uploads
+      - outputs_data:/app/outputs
+      - temp_data:/app/temp
+      - weights_data:/app/shared/weights
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ----------------------------------------------------------------------------
+  # Decoupled Telegram Bot Client
+  # Communicates EXCLUSIVELY via REST API with backend service
+  # ----------------------------------------------------------------------------
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zenemoo-bot
+    restart: always
+    command: python main.py --bot
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN:-8512332781:AAGhYn0O2iGC9sNABe3BqeqpCJv9NNJYzcQ}
+      - BACKEND_API_URL=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ----------------------------------------------------------------------------
+  # PostgreSQL Database Service
+  # ----------------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    container_name: zenemoo-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: zenemoo_user
+      POSTGRES_PASSWORD: zenemoo_password
+      POSTGRES_DB: zenemoo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zenemoo_user -d zenemoo_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  uploads_data:
+  outputs_data:
+  temp_data:
+  weights_data:

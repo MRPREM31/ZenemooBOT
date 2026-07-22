@@ -1,0 +1,59 @@
+# Model Weights & Binaries
+*.pth
+*.pt
+*.onnx
+*.bin
+shared/weights/**/*.pth
+gfpgan/weights/**/*.pth
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment and Secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+zenemoo.db
+
+# Logs and Storage
+logs/
+*.log
+outputs/*
+!outputs/.gitkeep
+uploads/*
+!uploads/.gitkeep
+temp/*
+!temp/.gitkeep
+
+# Cache & Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor & IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary test images
+*.png
+*.jpg
+*.jpeg
+*.webp
+!static/**
