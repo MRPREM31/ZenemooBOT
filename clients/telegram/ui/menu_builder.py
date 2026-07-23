@@ -226,12 +226,17 @@ def get_feature_action_message(action_name: str) -> str:
     )
 
 
-def get_processing_message(pct: int = 20) -> str:
+def get_processing_message(progress_label: Any = None, pct: int = 20) -> str:
     """Returns the user-friendly progress message without estimated seconds or technical logs."""
+    if isinstance(progress_label, int):
+        pct = progress_label
+        progress_label = None
+
     blocks = int(pct / 10)
     bar = "█" * blocks + "░" * (10 - blocks)
 
     stage_info = {
+        10: ("📥 Enqueuing Job...", "Position #1 in queue."),
         20: ("🔍 Analyzing image...", "Checking image quality and detecting faces."),
         30: ("🧠 Preparing AI models...", "Loading enhancement pipeline."),
         50: ("🎯 Restoring image details...", "Applying advanced restoration models."),
@@ -240,7 +245,14 @@ def get_processing_message(pct: int = 20) -> str:
         100: ("📦 Preparing your enhanced image...", "Finalizing output."),
     }
 
-    status, sub = stage_info.get(pct, ("🧠 Processing image...", "Enhancing photo details."))
+    if pct in stage_info:
+        status, sub = stage_info[pct]
+    elif progress_label:
+        status = f"🧠 {progress_label}"
+        sub = "Enhancing photo details."
+    else:
+        status = "🧠 Processing image..."
+        sub = "Enhancing photo details."
 
     return (
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
