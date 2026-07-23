@@ -4,7 +4,8 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688.svg)](https://fastapi.tiangolo.com)
 [![Telegram Bot](https://img.shields.io/badge/Telegram%20Bot-v22%2B-2CA5E0.svg)](https://python-telegram-bot.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-CUDA%20Accelerated-EE4C2C.svg)](https://pytorch.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
+[![Contact](https://img.shields.io/badge/Contact-contact%40mrprem.in-blue.svg)](mailto:contact@mrprem.in)
 
 **Zenemoo AI** is an enterprise-grade, clean-architecture AI Image Enhancement platform. It features a **Decoupled Telegram Bot Client**, a **FastAPI REST API Backend**, a **Web Admin Dashboard**, and a **Modular Deep Learning Processing Subsystem**.
 
@@ -165,6 +166,13 @@ pytest tests/
 
 ---
 
-## 📄 License
+## 📄 License & Proprietary Rights
 
-Distributed under the MIT License. See `LICENSE` for details.
+Copyright © 2026 **Zenemoo AI**. All Rights Reserved.
+
+This software is protected under an **Enterprise Proprietary & Commercial License**. 
+No commercial use, SaaS deployment, hosting, redistribution, reverse engineering, or public service deployment is permitted without prior explicit written authorization.
+
+For enterprise licensing inquiries, commercial permissions, or partnership authorization, contact:
+- 📧 **Email**: [contact@mrprem.in](mailto:contact@mrprem.in)
+- 📜 **Full License Details**: See [LICENSE](LICENSE)
