@@ -53,7 +53,8 @@ class Settings(BaseSettings):
     # Hardware & Performance
     DEVICE: str = "auto"
     NUM_WORKERS: int = 4
-    MAX_CONCURRENT_GPU_JOBS: int = 2
+    MAX_GPU_WORKERS: int = 3
+    MAX_CONCURRENT_GPU_JOBS: int = 3
     JOB_CACHE_TTL_SECONDS: int = 3600
 
     @property

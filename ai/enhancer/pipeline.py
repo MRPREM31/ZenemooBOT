@@ -86,17 +86,23 @@ class UnifiedEnhancementPipeline:
                 logger.info(f"📐 Input resolution ({orig_w}x{orig_h} px, {(orig_w*orig_h)/1e6:.2f} MP) > 2048px limit. Auto-resizing working copy...")
                 current_pil = smart_downscale_pil(current_pil, max_dim=2048)
 
+            # Import image analyzer for smart stage skipping metrics
+            from shared.utils.image_analyzer import analyze_image_properties
+            analysis = analyze_image_properties(current_pil)
+
             # 3. Background Removal Stage (Optional)
             if remove_bg:
                 t0 = time.perf_counter()
                 _notify(30, "Removing Background (rembg U²-Net)")
                 current_pil = bg_remover_engine.remove_background(current_pil)
                 self._log_stage_telemetry("Background Removal", current_pil, time.perf_counter() - t0)
+            else:
+                logger.info("ℹ️ Smart Stage Skipping: Background removal not requested. Skipping rembg stage.")
 
             # 4. Smart Face Restoration Stage (GFPGAN / CodeFormer)
             if face_restore:
-                t0 = time.perf_counter()
-                if face_restorer_manager.has_faces(current_pil):
+                if analysis["has_faces"]:
+                    t0 = time.perf_counter()
                     _notify(50, f"Restoring Faces ({face_model.upper()})")
                     current_pil = face_restorer_manager.restore_face(
                         current_pil,
@@ -106,25 +112,35 @@ class UnifiedEnhancementPipeline:
                     )
                     self._log_stage_telemetry("Face Restoration", current_pil, time.perf_counter() - t0)
                 else:
-                    logger.info("ℹ️ Smart Pipeline: 0 faces detected in input image. Skipping face restoration stage.")
+                    logger.info("ℹ️ Smart Stage Skipping: 0 faces detected in input image. Skipping face restoration stage.")
 
             # 5. Super Resolution Stage (Real-ESRGAN)
+            force_upscale = opts.get("force_upscale", False)
+            curr_w, curr_h = current_pil.size
+            is_already_high_res = (max(curr_w, curr_h) >= 2000 or (curr_w * curr_h) / 1e6 >= 4.0)
+            
             if upscale_factor in [2, 4]:
-                t0 = time.perf_counter()
-                _notify(70, f"Super Resolution Upscaling ({upscale_factor}x Real-ESRGAN)")
-                current_pil = realesrgan_engine.upscale(
-                    current_pil,
-                    scale=upscale_factor,
-                    fast_mode=fast_mode,
-                )
-                self._log_stage_telemetry("Real-ESRGAN Upscale", current_pil, time.perf_counter() - t0)
+                if is_already_high_res and not force_upscale:
+                    logger.info(f"ℹ️ Smart Stage Skipping: Image resolution ({curr_w}x{curr_h} px) is already high. Skipping Real-ESRGAN upscaling stage.")
+                else:
+                    t0 = time.perf_counter()
+                    _notify(70, f"Super Resolution Upscaling ({upscale_factor}x Real-ESRGAN)")
+                    current_pil = realesrgan_engine.upscale(
+                        current_pil,
+                        scale=upscale_factor,
+                        fast_mode=fast_mode,
+                    )
+                    self._log_stage_telemetry("Real-ESRGAN Upscale", current_pil, time.perf_counter() - t0)
 
             # 6. Denoise & Sharpen Stage (SwinIR)
             if do_sharpen:
-                t0 = time.perf_counter()
-                _notify(85, "Sharpening & Denoising (SwinIR)")
-                current_pil = sharpen_engine.sharpen_and_denoise(current_pil)
-                self._log_stage_telemetry("SwinIR Sharpen", current_pil, time.perf_counter() - t0)
+                if analysis["is_sharp"]:
+                    logger.info(f"ℹ️ Smart Stage Skipping: Image is already sharp (Laplacian variance {analysis['laplacian_variance']} > 300). Skipping SwinIR sharpen stage.")
+                else:
+                    t0 = time.perf_counter()
+                    _notify(85, "Sharpening & Denoising (SwinIR)")
+                    current_pil = sharpen_engine.sharpen_and_denoise(current_pil)
+                    self._log_stage_telemetry("SwinIR Sharpen", current_pil, time.perf_counter() - t0)
 
 
             # 7. Smart Compression & Output Optimization Stage

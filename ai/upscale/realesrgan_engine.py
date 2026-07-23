@@ -66,18 +66,23 @@ class RealESRGANEngine:
                 raise AIModelException(f"Failed initializing Real-ESRGAN {scale}x PyTorch model: {e}", model_name="Real-ESRGAN")
 
     def _determine_best_tile_size(self, image_shape: Tuple[int, int]) -> int:
-        """Dynamically determines optimal tile size based on available VRAM to maximize speed and prevent OOM."""
+        """Phase 5: Chooses Real-ESRGAN tile size dynamically based on free VRAM."""
         if not torch.cuda.is_available():
             return 512
 
-        gpu_info = get_gpu_info()
-        rem_mb = gpu_info.get("remaining_vram_mb", 4000.0)
+        from shared.utils.gpu import get_extended_gpu_telemetry
+        telemetry = get_extended_gpu_telemetry()
+        free_mb = telemetry.get("free_vram_mb", 4000.0)
 
-        # Cap max tile size to 512 for 6GB RTX GPUs to prevent memory spikes
-        if rem_mb >= 3500:
+        # Phase 5 thresholds
+        if free_mb > 5000:
+            best_tile = 1024
+        elif free_mb > 4000:
+            best_tile = 768
+        elif free_mb > 3000:
             best_tile = 512
-        elif rem_mb >= 2000:
-            best_tile = 384
+        elif free_mb > 2000:
+            best_tile = 256
         else:
             best_tile = 256
 

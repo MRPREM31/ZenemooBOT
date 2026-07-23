@@ -58,6 +58,69 @@ def get_gpu_info() -> Dict[str, Any]:
     return info
 
 
+def get_extended_gpu_telemetry() -> Dict[str, Any]:
+    """
+    Returns extended GPU hardware telemetry including GPU utilization %,
+    GPU temperature °C, free VRAM, used VRAM, and total VRAM.
+    """
+    telemetry = {
+        "gpu_utilization_pct": 0.0,
+        "temperature_c": 0.0,
+        "free_vram_mb": 0.0,
+        "total_vram_mb": 0.0,
+        "used_vram_mb": 0.0,
+        "vram_used_pct": 0.0,
+        "device_name": "CPU Fallback",
+    }
+
+    # 1. PyTorch CUDA memory
+    try:
+        import torch
+        if torch.cuda.is_available():
+            telemetry["device_name"] = torch.cuda.get_device_name(0)
+            free_bytes, total_bytes = torch.cuda.mem_get_info()
+            telemetry["free_vram_mb"] = round(free_bytes / (1024 * 1024), 2)
+            telemetry["total_vram_mb"] = round(total_bytes / (1024 * 1024), 2)
+            used_bytes = total_bytes - free_bytes
+            telemetry["used_vram_mb"] = round(used_bytes / (1024 * 1024), 2)
+            if total_bytes > 0:
+                telemetry["vram_used_pct"] = round((used_bytes / total_bytes) * 100.0, 1)
+    except Exception:
+        pass
+
+    # 2. Try pynvml for utilization & temperature
+    try:
+        import pynvml
+        pynvml.nvmlInit()
+        handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        util = pynvml.nvmlDeviceGetUtilizationRates(handle)
+        temp = pynvml.nvmlDeviceGetTemperature(handle, pynvml.NVML_TEMPERATURE_GPU)
+        telemetry["gpu_utilization_pct"] = float(util.gpu)
+        telemetry["temperature_c"] = float(temp)
+        return telemetry
+    except Exception:
+        pass
+
+    # 3. Fallback to nvidia-smi subprocess query
+    try:
+        import subprocess
+        res = subprocess.run(
+            ["nvidia-smi", "--query-gpu=utilization.gpu,temperature.gpu", "--format=csv,noheader,nounits"],
+            capture_output=True,
+            text=True,
+            timeout=1,
+        )
+        if res.returncode == 0 and res.stdout.strip():
+            parts = res.stdout.strip().split(",")
+            if len(parts) >= 2:
+                telemetry["gpu_utilization_pct"] = float(parts[0].strip())
+                telemetry["temperature_c"] = float(parts[1].strip())
+    except Exception:
+        pass
+
+    return telemetry
+
+
 def reset_gpu_peak_memory() -> None:
     """Resets max memory stats tracker in PyTorch CUDA."""
     try:

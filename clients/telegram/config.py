@@ -22,6 +22,7 @@ class TelegramBotSettings(BaseSettings):
     API_TIMEOUT_SECONDS: int = 300
     MAX_RETRIES: int = 3
     RATE_LIMIT_PER_MIN: int = 15
+    MAX_GPU_WORKERS: int = 3
 
 
 
