@@ -6,6 +6,7 @@ from .command_handler import (
     start_command,
     help_command,
     about_command,
+    contact_command,
     settings_command,
     history_command,
 )
@@ -16,6 +17,7 @@ __all__ = [
     "start_command",
     "help_command",
     "about_command",
+    "contact_command",
     "settings_command",
     "history_command",
     "handle_incoming_photo",

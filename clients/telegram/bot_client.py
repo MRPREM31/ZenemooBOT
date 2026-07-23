@@ -20,6 +20,7 @@ from clients.telegram.handlers import (
     start_command,
     help_command,
     about_command,
+    contact_command,
     settings_command,
     history_command,
     handle_incoming_photo,
@@ -49,11 +50,11 @@ class TelegramBotClient:
             .build()
         )
 
-
         # Register Command Handlers
         app.add_handler(CommandHandler("start", start_command))
         app.add_handler(CommandHandler("help", help_command))
         app.add_handler(CommandHandler("about", about_command))
+        app.add_handler(CommandHandler("contact", contact_command))
         app.add_handler(CommandHandler("settings", settings_command))
         app.add_handler(CommandHandler("history", history_command))
         app.add_handler(CommandHandler("enhance", start_command))

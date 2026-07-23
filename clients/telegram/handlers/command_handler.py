@@ -2,26 +2,37 @@
 ==============================================================================
 Zenemoo AI - Telegram Bot Command Handlers
 ==============================================================================
-Handles slash commands (/start, /help, /about, /settings, /history, and mode shortcuts).
+Handles slash commands (/start, /help, /about, /contact, /settings, /history).
 """
 
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
 from telegram.ext import ContextTypes
 from core.logging import logger
 from clients.telegram.middlewares.rate_limit_middleware import check_rate_limit
+from clients.telegram.ui.menu_builder import (
+    get_welcome_first_message,
+    get_welcome_second_message,
+    get_help_message,
+    get_about_message,
+    get_contact_message,
+)
 
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """/start command handler."""
+    """/start command handler sending Welcome Message 1 and Welcome Message 2."""
     if not await check_rate_limit(update, context):
         return
 
-    from clients.telegram.ui.menu_builder import get_welcome_message, get_main_menu_keyboard
+    user = update.effective_user
+    first_name = user.first_name if user else "User"
 
-    welcome_text = get_welcome_message()
-    reply_markup = get_main_menu_keyboard()
+    # Send Welcome Message 1
+    msg1 = get_welcome_first_message(first_name)
+    await update.message.reply_text(msg1, parse_mode="Markdown")
 
-    await update.message.reply_text(welcome_text, parse_mode="Markdown", reply_markup=reply_markup)
+    # Send Welcome Message 2 immediately after (NO inline keyboard)
+    msg2 = get_welcome_second_message()
+    await update.message.reply_text(msg2, parse_mode="Markdown")
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -29,22 +40,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     if not await check_rate_limit(update, context):
         return
 
-    help_text = (
-        "📖 **Zenemoo AI Command Guide:**\n\n"
-        "/start - Start bot and view main menu\n"
-        "/help - Display command assistance\n"
-        "/about - System specs and AI models info\n"
-        "/settings - Configure default enhancement options\n"
-        "/history - View recent image enhancement logs\n\n"
-        "⚡ **Direct Pipeline Shortcuts:**\n"
-        "/enhance - Set default mode to Full AI Pipeline\n"
-        "/removebg - Set default mode to Background Removal\n"
-        "/upscale - Set default mode to 4x Super Resolution\n"
-        "/restore - Set default mode to Face Restoration\n"
-        "/sharpen - Set default mode to Denoise & Sharpen\n"
-        "/colorize - Set default mode to B&W Colorization\n"
-        "/compress - Set default mode to Image Compression\n"
-    )
+    help_text = get_help_message()
     await update.message.reply_text(help_text, parse_mode="Markdown")
 
 
@@ -53,20 +49,17 @@ async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if not await check_rate_limit(update, context):
         return
 
-    about_text = (
-        "🤖 **Zenemoo AI Platform Architecture**\n\n"
-        "**Tagline:** AI-Powered Image Enhancement Platform\n"
-        "**Version:** 1.0.0 (Production Clean Architecture)\n\n"
-        "🚀 **Integrated Deep Learning Engines:**\n"
-        "• GFPGAN v1.4 & CodeFormer (Face Restoration)\n"
-        "• Real-ESRGAN x2/x4 (Super Resolution)\n"
-        "• SwinIR (Denoising & Restoration)\n"
-        "• rembg U²-Net (Background Removal)\n"
-        "• DeOldify (B&W Colorization)\n"
-        "• LaMa (Object Removal & Inpainting)\n\n"
-        "⚡ *Powered by FastAPI Backend & PyTorch CUDA Hardware Acceleration.*"
-    )
+    about_text = get_about_message()
     await update.message.reply_text(about_text, parse_mode="Markdown")
+
+
+async def contact_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """/contact command handler."""
+    if not await check_rate_limit(update, context):
+        return
+
+    contact_text = get_contact_message()
+    await update.message.reply_text(contact_text, parse_mode="Markdown")
 
 
 async def settings_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
