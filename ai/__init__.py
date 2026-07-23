@@ -27,7 +27,7 @@ def warmup_all_models() -> None:
 
         # Initialize background remover ONNX session
         logger.info("  [1/6] Warming up rembg (U²-Net)...")
-        bg_remover_engine._get_session()
+        bg_remover_engine._get_session("u2net")
 
         # Initialize GFPGAN face restoration model
         logger.info("  [2/6] Warming up GFPGAN v1.4...")

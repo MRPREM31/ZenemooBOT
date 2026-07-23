@@ -219,7 +219,7 @@ class TelegramJobQueueManager:
         endpoint = job["endpoint"]
         status_msg_id = job["status_msg_id"]
         context = job["context"]
-        start_time = ti    async def _update_progress(self, context, chat_id, status_msg_id, label: str, pct: int):
+    async def _update_progress(self, context, chat_id, status_msg_id, label: str, pct: int):
         """Updates Telegram message with live dynamic progress bar."""
         try:
             blocks = int(pct / 10)
@@ -444,7 +444,6 @@ class TelegramJobQueueManager:
                     parse_mode="Markdown",
                 )
             except Exception:
-                passeption:
                 pass
 
 
