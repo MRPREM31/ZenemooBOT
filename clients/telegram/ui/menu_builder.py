@@ -272,6 +272,8 @@ def get_completion_message(
     res_h: int = 3840,
     quality_score: int = 97,
     processing_time: float = 11.4,
+    direct_link: Optional[str] = None,
+    **kwargs: Any,
 ) -> str:
     """Returns the formatted completion report message without direct URLs."""
     feat_name = FEATURE_DISPLAY_NAMES.get(action_name, action_name.replace("ai_", "").replace("_", " ").title())

@@ -294,7 +294,6 @@ class TelegramJobQueueManager:
                 res_h=res_h,
                 quality_score=97,
                 processing_time=elapsed,
-                direct_link=output_url,
             )
 
             # 3. Send output image back to user
