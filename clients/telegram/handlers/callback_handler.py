@@ -73,14 +73,17 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
     # 3. AI Processing Pipeline Actions
     file_id = context.user_data.get("last_photo_file_id")
     if not file_id:
-        await query.message.reply_text("⚠️ Photo context expired. Please resend your photo.")
+        from clients.telegram.ui.menu_builder import get_feature_action_message
+        action_prompt = get_feature_action_message(callback_data)
+        await query.message.reply_text(action_prompt, parse_mode="Markdown")
         return
 
     endpoint = ENDPOINT_MAPPING.get(callback_data, "/enhance")
 
-    # Send initial progress message
+    # Send initial status message
+    from clients.telegram.ui.menu_builder import get_processing_message
     status_msg = await query.message.reply_text(
-        f"📥 **Job Queued!** Position #1 in queue.\nPreparing to execute `{callback_data}`...",
+        get_processing_message("Enqueuing Job", 10),
         parse_mode="Markdown"
     )
 

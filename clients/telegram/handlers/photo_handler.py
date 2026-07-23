@@ -36,42 +36,18 @@ async def handle_incoming_photo(update: Update, context: ContextTypes.DEFAULT_TY
     # Cache file_id in context user data
     context.user_data["last_photo_file_id"] = file_id
 
+    from clients.telegram.ui.menu_builder import get_main_menu_keyboard
+
     caption_text = (
-        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n\n"
         "✨ **Zenemoo AI**\n\n"
         "📥 **Image Received**\n"
         f"• Size: `{file_size_mb:.2f} MB`\n"
         "✔ **Image Analysis Complete**\n\n"
-        "Select an AI processing engine or Flagship Studio below:\n"
+        "Choose an AI enhancement feature below:\n\n"
         "━━━━━━━━━━━━━━━━━━━━━━"
     )
 
-    keyboard = [
-        [
-            InlineKeyboardButton("📘 Passport Studio", callback_data="ai_passport"),
-            InlineKeyboardButton("🌙 Night Enhance", callback_data="ai_night"),
-        ],
-        [
-            InlineKeyboardButton("🎭 Portrait Studio", callback_data="ai_portrait"),
-            InlineKeyboardButton("🎨 Cartoon Studio", callback_data="ai_cartoon"),
-        ],
-        [
-            InlineKeyboardButton("✨ Full AI Enhance", callback_data="ai_enhance"),
-            InlineKeyboardButton("🖼️ Remove BG", callback_data="ai_removebg"),
-        ],
-        [
-            InlineKeyboardButton("🔍 2x Upscale", callback_data="ai_upscale_2x"),
-            InlineKeyboardButton("🔎 4x Upscale", callback_data="ai_upscale_4x"),
-        ],
-        [
-            InlineKeyboardButton("⚡ Denoise & Sharpen", callback_data="ai_sharpen"),
-            InlineKeyboardButton("🎨 Colorize B&W", callback_data="ai_colorize"),
-        ],
-        [
-            InlineKeyboardButton("📜 Vintage Colorize", callback_data="ai_colorize_vintage"),
-            InlineKeyboardButton("📦 Smart Compress", callback_data="ai_compress"),
-        ],
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    reply_markup = get_main_menu_keyboard()
 
     await message.reply_text(caption_text, parse_mode="Markdown", reply_markup=reply_markup)

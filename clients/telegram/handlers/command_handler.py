@@ -16,27 +16,10 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if not await check_rate_limit(update, context):
         return
 
-    welcome_text = (
-        "✨ **Welcome to Zenemoo AI!** ✨\n\n"
-        "I am an **AI-Powered Image Enhancement Platform** capable of transforming your photos with state-of-the-art models.\n\n"
-        "📸 **How to Use:**\n"
-        "Simply **send me any photo**, and select your desired AI enhancement mode!\n\n"
-        "🔥 **Available Features:**\n"
-        "• 🪄 **Full AI Enhancement** (GFPGAN + Real-ESRGAN + SwinIR)\n"
-        "• 🎭 **Face Restoration** (GFPGAN / CodeFormer)\n"
-        "• 🔍 **Super Resolution Upscale** (2x / 4x)\n"
-        "• 🖼️ **Background Removal** (rembg / U²-Net)\n"
-        "• 🎨 **B&W Colorization** (DeOldify)\n"
-        "• ⚡ **Sharpen & Denoise**\n"
-        "• 📦 **Smart Compression**\n\n"
-        "Use /help to view all commands."
-    )
-    
-    keyboard = [
-        [InlineKeyboardButton("ℹ️ System Status & Backend", callback_data="check_health")],
-        [InlineKeyboardButton("⚙️ Settings", callback_data="cmd_settings"), InlineKeyboardButton("📜 History", callback_data="cmd_history")],
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    from clients.telegram.ui.menu_builder import get_welcome_message, get_main_menu_keyboard
+
+    welcome_text = get_welcome_message()
+    reply_markup = get_main_menu_keyboard()
 
     await update.message.reply_text(welcome_text, parse_mode="Markdown", reply_markup=reply_markup)
 

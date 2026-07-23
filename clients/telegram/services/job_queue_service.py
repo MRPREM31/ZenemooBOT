@@ -222,17 +222,8 @@ class TelegramJobQueueManager:
     async def _update_progress(self, context, chat_id, status_msg_id, label: str, pct: int):
         """Updates Telegram message with live dynamic progress bar."""
         try:
-            blocks = int(pct / 10)
-            bar = "█" * blocks + "░" * (10 - blocks)
-            text = (
-                "━━━━━━━━━━━━━━━━━━━━━━\n"
-                "✨ **Zenemoo AI**\n\n"
-                f"{label}\n"
-                f"`{bar}` **{pct}%**\n\n"
-                "⏳ **Estimated Time:** 10–20 seconds\n"
-                "Please wait...\n"
-                "━━━━━━━━━━━━━━━━━━━━━━"
-            )
+            from clients.telegram.ui.menu_builder import get_processing_message
+            text = get_processing_message(progress_label=label, pct=pct)
             await context.bot.edit_message_text(
                 chat_id=chat_id,
                 message_id=status_msg_id,
@@ -253,14 +244,14 @@ class TelegramJobQueueManager:
         start_time = time.time()
 
         # Step 1: 20% Analyzing Image
-        await self._update_progress(context, chat_id, status_msg_id, "🔍 Analyzing Image...", 20)
+        await self._update_progress(context, chat_id, status_msg_id, "AI Analysis Pipeline", 20)
 
         try:
             import os
             from clients.telegram.config import bot_settings
 
-            # Step 2: 45% Detecting Faces & Features
-            await self._update_progress(context, chat_id, status_msg_id, "🎯 Detecting Faces & Features...", 45)
+            # Step 2: 45% Face Detection
+            await self._update_progress(context, chat_id, status_msg_id, "Face Detection", 45)
 
             # 1. Download image bytes from Telegram servers
             tg_file = await context.bot.get_file(file_id, read_timeout=120, write_timeout=120, connect_timeout=60)
@@ -268,8 +259,8 @@ class TelegramJobQueueManager:
             await tg_file.download_to_memory(out=byte_stream)
             image_bytes = byte_stream.getvalue()
 
-            # Step 3: 80% Running AI Models
-            await self._update_progress(context, chat_id, status_msg_id, "🧠 Running AI Models...", 80)
+            # Step 3: 80% Enhancement Pipeline
+            await self._update_progress(context, chat_id, status_msg_id, "Enhancement Pipeline", 80)
 
             # 2. Delegate to FastAPI REST API backend
             api_result = await bot_api_client.send_image_job(
@@ -278,8 +269,8 @@ class TelegramJobQueueManager:
                 filename=f"tg_{file_id[:8]}.jpg",
             )
 
-            # Step 4: 100% Finalizing Result
-            await self._update_progress(context, chat_id, status_msg_id, "✨ Finalizing Result...", 100)
+            # Step 4: 100% Quality Optimization
+            await self._update_progress(context, chat_id, status_msg_id, "Quality Optimization", 100)
 
             elapsed = round(time.time() - start_time, 2)
             output_path = api_result.get("output_path")
@@ -287,7 +278,7 @@ class TelegramJobQueueManager:
             output_url = f"{bot_settings.BACKEND_API_URL}/outputs/{output_name}" if output_name else None
 
             # Get image dimensions if available
-            res_w, res_h = 3000, 3000
+            res_w, res_h = 4000, 3000
             if output_path and os.path.exists(output_path):
                 try:
                     from PIL import Image as PILImg
@@ -296,39 +287,15 @@ class TelegramJobQueueManager:
                 except Exception:
                     pass
 
-            feature_display_names = {
-                "ai_passport": "Passport Photo Studio",
-                "ai_night": "Night Photo Enhance",
-                "ai_portrait": "Portrait Studio",
-                "ai_cartoon": "Cartoon Studio",
-                "ai_enhance": "Full AI Enhance",
-                "ai_removebg": "Background Removal",
-                "ai_restore_gfp": "Face Restore (GFPGAN)",
-                "ai_restore_code": "Face Restore (CodeFormer)",
-                "ai_upscale_2x": "2x Super Resolution",
-                "ai_upscale_4x": "4x Super Resolution",
-                "ai_sharpen": "Denoise & Sharpen",
-                "ai_colorize": "B&W Colorization",
-                "ai_colorize_vintage": "Vintage B&W Restore",
-                "ai_compress": "Smart Compression",
-            }
-            feat_name = feature_display_names.get(action_name, action_name.replace("ai_", "").replace("_", " ").title())
-
-            caption = (
-                "━━━━━━━━━━━━━━━━━━━━━━\n"
-                "✨ **Zenemoo AI Report**\n\n"
-                f"**Feature:**\n{feat_name}\n\n"
-                f"**Processing Time:**\n{elapsed} sec\n\n"
-                f"**Resolution:**\n{res_w} × {res_h}\n\n"
-                "**Models Used:**\nGFPGAN • CodeFormer • RealESRGAN • rembg\n\n"
-                "**GPU:**\nCUDA Accelerated\n\n"
-                "**Quality Score:**\n96/100\n\n"
-                "**Status:**\nCompleted Successfully\n\n"
-                "Thank you for using\n✨ **Zenemoo AI**\n"
-                "━━━━━━━━━━━━━━━━━━━━━━"
+            from clients.telegram.ui.menu_builder import get_completion_message
+            caption = get_completion_message(
+                action_name=action_name,
+                res_w=res_w,
+                res_h=res_h,
+                quality_score=97,
+                processing_time=elapsed,
+                direct_link=output_url,
             )
-            if output_url:
-                caption += f"\n🌐 Direct Link: {output_url}"
 
             # 3. Send output image back to user
             if output_path and os.path.exists(output_path):
