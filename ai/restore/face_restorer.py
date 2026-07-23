@@ -18,7 +18,7 @@ from ai.restore.face_blender import (
 from typing import Union, List, Tuple, Any
 
 class FaceRestorerManager:
-    """Enterprise Remini-Style Intelligent Face Enhancement Manager."""
+    """Enterprise Zenemoo AI Intelligent Face Enhancement Manager."""
 
     def __init__(self):
         self._face_cascade = None
@@ -56,7 +56,7 @@ class FaceRestorerManager:
         only_center_face: bool = False,
     ) -> Image.Image:
         """
-        Executes Remini-Style Intelligent Face Enhancement:
+        Executes Zenemoo AI Intelligent Face Enhancement:
         1. Multi-face bounding box detection
         2. Per-face quality analysis (size, blur, noise, pose, confidence)
         3. Adaptive strategy execution:
@@ -91,7 +91,7 @@ class FaceRestorerManager:
                 res_pil = res_pil.resize((w_img, h_img), Image.LANCZOS)
             return res_pil
 
-        logger.info(f"🎭 Remini Face Enhancer isolated {len(boxes)} face(s). Executing intelligent adaptive pipeline...")
+        logger.info(f"🎭 Zenemoo AI Face Enhancer isolated {len(boxes)} face(s). Executing intelligent adaptive pipeline...")
 
         output_bgr = base_bgr.copy()
         strategies_used = []
@@ -158,7 +158,7 @@ class FaceRestorerManager:
         avg_final = float(np.mean(final_qualities)) if final_qualities else 0.0
 
         logger.info(
-            f"✨ REMINI FACE ENHANCEMENT COMPLETE | Faces: {len(boxes)} | Strategies: {strategies_used} | "
+            f"✨ ZENEMOO AI FACE ENHANCEMENT COMPLETE | Faces: {len(boxes)} | Strategies: {strategies_used} | "
             f"Processing Time: {elapsed}s | Initial Avg Quality: {avg_init:.2f}/1.00 -> Final Avg Quality: {avg_final:.2f}/1.00"
         )
 

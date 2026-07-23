@@ -6,7 +6,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-CUDA%20Accelerated-EE4C2C.svg)](https://pytorch.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Zenemoo AI** is an enterprise-grade, clean-architecture AI Image Enhancement platform similar to Remini. It features a **Decoupled Telegram Bot Client**, a **FastAPI REST API Backend**, a **Web Admin Dashboard**, and a **Modular Deep Learning Processing Subsystem**.
+**Zenemoo AI** is an enterprise-grade, clean-architecture AI Image Enhancement platform. It features a **Decoupled Telegram Bot Client**, a **FastAPI REST API Backend**, a **Web Admin Dashboard**, and a **Modular Deep Learning Processing Subsystem**.
 
 ---
 

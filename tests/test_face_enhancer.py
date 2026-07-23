@@ -1,6 +1,6 @@
 """
 ==============================================================================
-Zenemoo AI - Remini-Style Intelligent Face Enhancement Verification Suite
+Zenemoo AI - Intelligent Face Enhancement Verification Suite
 ==============================================================================
 Validates face quality analysis, adaptive pipeline selection, independent face
 crop & seamless mask blending, skin texture preservation, post-quality check,
@@ -41,9 +41,9 @@ def create_synthetic_portrait_with_faces() -> Image.Image:
     return img
 
 
-def run_remini_face_tests():
+def run_intelligent_face_tests():
     print("=" * 80)
-    print("🎭 ZENEMOO AI - REMINI-STYLE INTELLIGENT FACE ENHANCEMENT TEST")
+    print("🎭 ZENEMOO AI - INTELLIGENT FACE ENHANCEMENT TEST")
     print("=" * 80)
 
     portrait_img = create_synthetic_portrait_with_faces()
@@ -74,20 +74,20 @@ def run_remini_face_tests():
     print(f" • Seamless Mask Blending Completed cleanly ({blended.shape[1]}x{blended.shape[0]} px)")
     print("-" * 80)
 
-    # 3. Test End-to-End Remini Face Enhancer Manager Execution
-    print("\n[TEST 3] Executing End-to-End Remini Intelligent Face Restoration...")
+    # 3. Test End-to-End Face Enhancer Manager Execution
+    print("\n[TEST 3] Executing End-to-End Zenemoo AI Intelligent Face Restoration...")
     t0 = time.perf_counter()
     restored_pil = face_restorer_manager.restore_face(portrait_img, model="auto")
     elapsed = time.perf_counter() - t0
 
     assert restored_pil.size == (800, 800), "Output resolution must match original!"
-    print(f" • Remini Intelligent Face Enhancement Completed in {elapsed:.2f}s | Output: {restored_pil.width}x{restored_pil.height} px")
+    print(f" • Zenemoo AI Intelligent Face Enhancement Completed in {elapsed:.2f}s | Output: {restored_pil.width}x{restored_pil.height} px")
     print("-" * 80)
 
     print("\n" + "=" * 80)
-    print("🏆 ALL REMINI-STYLE INTELLIGENT FACE ENHANCEMENT REQUIREMENTS VERIFIED CLEANLY!")
+    print("🏆 ALL ZENEMOO AI INTELLIGENT FACE ENHANCEMENT REQUIREMENTS VERIFIED CLEANLY!")
     print("=" * 80)
 
 
 if __name__ == "__main__":
-    run_remini_face_tests()
+    run_intelligent_face_tests()
