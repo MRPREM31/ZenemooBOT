@@ -301,7 +301,10 @@ class TelegramJobQueueManager:
                 file_size = os.path.getsize(output_path)
                 sent = False
 
-                if file_size <= 10 * 1024 * 1024:
+                # Telegram photo limit: sum(w+h) <= 10000, max dim <= 5000, file <= 10MB
+                is_valid_photo_dims = (res_w + res_h <= 10000) and (res_w <= 5000) and (res_h <= 5000)
+
+                if file_size <= 10 * 1024 * 1024 and is_valid_photo_dims:
                     try:
                         with open(output_path, "rb") as out_f:
                             await context.bot.send_photo(
@@ -315,23 +318,9 @@ class TelegramJobQueueManager:
                             )
                         sent = True
                     except Exception as err_photo:
-                        logger.warning(f"send_photo failed ({err_photo}). Trying plain text...")
-                        try:
-                            plain_caption = caption.replace("**", "").replace("`", "")
-                            with open(output_path, "rb") as out_f:
-                                await context.bot.send_photo(
-                                    chat_id=chat_id,
-                                    photo=out_f,
-                                    caption=plain_caption,
-                                    parse_mode=None,
-                                    read_timeout=120,
-                                    write_timeout=120,
-                                    connect_timeout=60,
-                                )
-                            sent = True
-                        except Exception:
-                            pass
+                        logger.warning(f"send_photo failed ({err_photo}). Falling back to send_document...")
 
+                # Fallback: Send as uncompressed document if send_photo failed or image exceeds photo limits
                 if not sent:
                     try:
                         with open(output_path, "rb") as out_f:
@@ -345,17 +334,23 @@ class TelegramJobQueueManager:
                                 connect_timeout=60,
                             )
                         sent = True
-                    except Exception:
-                        plain_caption = caption.replace("**", "").replace("`", "")
-                        await context.bot.send_document(
-                            chat_id=chat_id,
-                            document=out_f,
-                            caption=plain_caption,
-                            parse_mode=None,
-                            read_timeout=120,
-                            write_timeout=120,
-                            connect_timeout=60,
-                        )
+                    except Exception as err_doc:
+                        logger.warning(f"send_document with Markdown failed ({err_doc}). Trying plain text document...")
+                        try:
+                            plain_caption = caption.replace("**", "").replace("`", "")
+                            with open(output_path, "rb") as out_f:
+                                await context.bot.send_document(
+                                    chat_id=chat_id,
+                                    document=out_f,
+                                    caption=plain_caption,
+                                    parse_mode=None,
+                                    read_timeout=120,
+                                    write_timeout=120,
+                                    connect_timeout=60,
+                                )
+                            sent = True
+                        except Exception as final_err:
+                            logger.error(f"Failed to send image document to user {chat_id}: {final_err}")
 
             # Clean up temporary progress message
             try:
