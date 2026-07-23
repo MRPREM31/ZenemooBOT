@@ -2,8 +2,8 @@
 ==============================================================================
 Zenemoo AI - Telegram Bot UI Menu Builder & Layout Definitions
 ==============================================================================
-Commercial-grade Telegram UI formatting, onboarding templates, menu keyboards,
-progress frames, and completion reports.
+Commercial-grade Telegram UI formatting, unified onboarding templates,
+menu keyboards, progress frames, and completion reports.
 """
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
@@ -28,57 +28,52 @@ FEATURE_DISPLAY_NAMES: Dict[str, str] = {
 }
 
 
-def get_welcome_first_message(first_name: str) -> str:
-    """Message 1 sent after user clicks /start."""
+def get_unified_welcome_message(first_name: str) -> str:
+    """Returns the single unified Telegram Welcome Message."""
     name = first_name or "User"
     return (
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         f"👋 Welcome, {name}!\n\n"
-        "Welcome to **Zenemoo AI** — your professional AI-powered image enhancement platform.\n\n"
-        "Transform, restore, upscale, and optimize your photos using advanced AI technology designed for exceptional image quality.\n\n"
-        "We're excited to help you create stunning results.\n\n"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    )
-
-
-def get_welcome_second_message() -> str:
-    """Message 2 sent immediately following Message 1."""
-    return (
+        "Welcome to **Zenemoo AI**\n\n"
+        "Professional AI Image Enhancement Platform\n\n"
+        "Transform, restore, upscale and optimize your photos using cutting-edge AI technology.\n\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-        "✨ What can Zenemoo AI do?\n\n"
-        "Zenemoo AI automatically enhances your images using state-of-the-art AI models optimized for quality and realism.\n\n"
         "📸 Getting Started\n\n"
         "Simply send any image to begin.\n\n"
-        "After uploading your image, you'll be able to choose from multiple AI enhancement options tailored to your needs.\n\n"
-        "Available AI Features\n\n"
+        "Once your image is uploaded, Zenemoo AI will automatically present all available enhancement options.\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "✨ Available AI Features\n\n"
         "✨ Full AI Enhance\n"
-        "Automatically analyzes and enhances your image using the most suitable AI models.\n\n"
+        "Complete intelligent image enhancement.\n\n"
         "👤 Portrait Studio\n"
-        "Professional portrait enhancement with natural facial improvements.\n\n"
+        "Professional portrait enhancement.\n\n"
         "🌙 Night Enhance\n"
-        "Recover details from low-light and nighttime photos.\n\n"
-        "🛂 Passport Studio\n"
-        "Generate passport-compliant photos with automatic alignment and background correction.\n\n"
+        "Improve low-light and night photos.\n\n"
+        " бабу Passport Studio\n"
+        "Generate passport-ready photos.\n\n"
         "🎨 Cartoon Studio\n"
-        "Transform photos into high-quality artistic cartoon styles.\n\n"
+        "Transform photos into artistic styles.\n\n"
         "🎭 Face Restore\n"
         "Restore blurry or damaged faces.\n\n"
         "🔍 AI Upscale\n"
-        "Increase image resolution with intelligent detail enhancement.\n\n"
+        "Increase image resolution.\n\n"
         "🖼️ Remove Background\n"
-        "Create transparent backgrounds with precise edge detection.\n\n"
+        "Generate transparent backgrounds.\n\n"
         "⚡ Denoise & Sharpen\n"
-        "Reduce image noise while preserving natural details.\n\n"
+        "Improve image clarity.\n\n"
         "🎨 Colorize B&W\n"
-        "Restore color to black-and-white photographs.\n\n"
+        "Restore colors to old photographs.\n\n"
         "📦 Smart Compress\n"
-        "Reduce file size while maintaining excellent visual quality.\n\n"
-        "Need assistance?\n\n"
-        "Type\n\n"
+        "Reduce file size while maintaining quality.\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "💡 Need Help?\n\n"
+        "Type:\n\n"
         "/help\n\n"
-        "to view commands and support information.\n\n"
+        "for commands, support and documentation.\n\n"
+        "Enjoy creating amazing images with\n\n"
+        "✨ Zenemoo AI\n\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    )
+    ).replace(" бабу Passport Studio", "🛂 Passport Studio")
 
 
 def get_main_menu_keyboard() -> InlineKeyboardMarkup:
@@ -119,29 +114,53 @@ def get_help_message() -> str:
     """Returns the formatted /help message."""
     return (
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-        "Zenemoo AI Help Center\n\n"
+        "📖 Zenemoo AI Help Center\n\n"
         "Available Commands\n\n"
         "/start\n"
         "Restart the bot\n\n"
         "/help\n"
-        "Help and documentation\n\n"
+        "View help information\n\n"
         "/about\n"
         "About Zenemoo AI\n\n"
         "/contact\n"
         "Contact Support\n\n"
-        "Supported Formats\n\n"
-        "JPG\n\n"
-        "PNG\n\n"
-        "WEBP\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "🖼 Supported Image Formats\n\n"
+        "• JPG\n"
+        "• JPEG\n"
+        "• PNG\n"
+        "• WEBP\n\n"
         "Maximum Upload Size\n\n"
         "20 MB\n\n"
-        "Tips\n\n"
-        "• Use high-resolution images whenever possible.\n\n"
-        "• Portrait photos produce the best enhancement results.\n\n"
-        "• Larger images may require additional processing time.\n\n"
-        "Need additional assistance?\n\n"
-        "📧 contact@mrprem.in\n\n"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "✨ Available Features\n\n"
+        "• Full AI Enhance\n\n"
+        "• Portrait Studio\n\n"
+        "• Night Enhance\n\n"
+        "• Passport Studio\n\n"
+        "• Cartoon Studio\n\n"
+        "• Face Restore\n\n"
+        "• AI Upscale\n\n"
+        "• Remove Background\n\n"
+        "• Denoise & Sharpen\n\n"
+        "• Colorize B&W\n\n"
+        "• Smart Compress\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "📌 Tips\n\n"
+        "• Upload high-resolution images for the best results.\n\n"
+        "• Portrait images provide the highest enhancement quality.\n\n"
+        "• Larger images may require more processing time.\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "📧 Support\n\n"
+        "Email:\n"
+        "contact@mrprem.in\n\n"
+        "Website:\n"
+        "mrprem.in\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "Powered by\n\n"
+        "✨ Zenemoo AI\n\n"
+        "Created by\n\n"
+        "🌐 mrprem.in"
     )
 
 

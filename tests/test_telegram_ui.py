@@ -2,7 +2,7 @@
 ==============================================================================
 Zenemoo AI - Telegram Commercial UI Test Suite
 ==============================================================================
-Validates commercial Telegram UI onboarding flow, messages 1 & 2, /help, /about,
+Validates unified single welcome message onboarding flow, /help, /about,
 /contact commands, inline keyboard buttons, progress stages, and completion report.
 """
 
@@ -12,8 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from clients.telegram.ui.menu_builder import (
-    get_welcome_first_message,
-    get_welcome_second_message,
+    get_unified_welcome_message,
     get_main_menu_keyboard,
     get_help_message,
     get_about_message,
@@ -29,27 +28,26 @@ def run_ui_tests():
     print("🤖 ZENEMOO AI - COMMERCIAL TELEGRAM UI TEST SUITE")
     print("=" * 80)
 
-    # 1. Test Onboarding Welcome Messages 1 & 2
-    print("\n[1] Testing Welcome Messages 1 & 2...")
-    msg1 = get_welcome_first_message("Prem")
-    assert "Welcome, Prem!" in msg1
-    assert "Zenemoo AI" in msg1
-
-    msg2 = get_welcome_second_message()
-    assert "What can Zenemoo AI do?" in msg2
-    assert "Simply send any image to begin." in msg2
-    assert "Full AI Enhance" in msg2
-    assert "Portrait Studio" in msg2
-    assert "Night Enhance" in msg2
-    assert "Passport Studio" in msg2
-    assert "Cartoon Studio" in msg2
-    assert "Face Restore" in msg2
-    assert "AI Upscale" in msg2
-    assert "Remove Background" in msg2
-    assert "Denoise & Sharpen" in msg2
-    assert "Colorize B&W" in msg2
-    assert "Smart Compress" in msg2
-    print("  ✔ Onboarding Messages 1 & 2 format match specifications.")
+    # 1. Test Unified Single Welcome Message
+    print("\n[1] Testing Unified Single Welcome Message...")
+    msg = get_unified_welcome_message("Prem")
+    assert "Welcome, Prem!" in msg
+    assert "Zenemoo AI" in msg
+    assert "📸 Getting Started" in msg
+    assert "Simply send any image to begin." in msg
+    assert "✨ Available AI Features" in msg
+    assert "Full AI Enhance" in msg
+    assert "Portrait Studio" in msg
+    assert "Night Enhance" in msg
+    assert "Passport Studio" in msg
+    assert "Cartoon Studio" in msg
+    assert "Face Restore" in msg
+    assert "AI Upscale" in msg
+    assert "Remove Background" in msg
+    assert "Denoise & Sharpen" in msg
+    assert "Colorize B&W" in msg
+    assert "Smart Compress" in msg
+    print("  ✔ Unified Single Welcome message format matches specifications.")
 
     # 2. Test Main Menu Inline Keyboard Layout (Post-Photo Upload)
     print("\n[2] Testing Post-Photo Upload Inline Keyboard Layout...")
@@ -69,6 +67,7 @@ def run_ui_tests():
     print("\n[3] Testing /help, /about, and /contact Commands...")
     help_txt = get_help_message()
     assert "Zenemoo AI Help Center" in help_txt
+    assert "Supported Image Formats" in help_txt
     assert "contact@mrprem.in" in help_txt
 
     about_txt = get_about_message()

@@ -10,8 +10,7 @@ from telegram.ext import ContextTypes
 from core.logging import logger
 from clients.telegram.middlewares.rate_limit_middleware import check_rate_limit
 from clients.telegram.ui.menu_builder import (
-    get_welcome_first_message,
-    get_welcome_second_message,
+    get_unified_welcome_message,
     get_help_message,
     get_about_message,
     get_contact_message,
@@ -19,20 +18,16 @@ from clients.telegram.ui.menu_builder import (
 
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """/start command handler sending Welcome Message 1 and Welcome Message 2."""
+    """/start command handler sending ONE single unified Welcome Message."""
     if not await check_rate_limit(update, context):
         return
 
     user = update.effective_user
     first_name = user.first_name if user else "User"
 
-    # Send Welcome Message 1
-    msg1 = get_welcome_first_message(first_name)
-    await update.message.reply_text(msg1, parse_mode="Markdown")
-
-    # Send Welcome Message 2 immediately after (NO inline keyboard)
-    msg2 = get_welcome_second_message()
-    await update.message.reply_text(msg2, parse_mode="Markdown")
+    # Send single unified Welcome Message
+    welcome_text = get_unified_welcome_message(first_name)
+    await update.message.reply_text(welcome_text, parse_mode="Markdown")
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
