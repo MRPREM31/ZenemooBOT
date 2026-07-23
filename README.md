@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="Zenemoo AI Logo" width="380" />
+</p>
+
 # 🚀 Zenemoo AI - AI-Powered Image Enhancement Platform
 
 [![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org)
