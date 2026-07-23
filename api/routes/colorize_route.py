@@ -16,7 +16,8 @@ router = APIRouter(tags=["AI Image Enhancement"])
 @router.post("/colorize", response_model=ImageProcessResponse)
 async def colorize_image(
     file: UploadFile = File(...),
-    render_factor: int = Form(35, description="DeOldify render factor (7-40)"),
+    render_factor: int = Form(35, description="Colorization render factor (7-40)"),
+    vintage_mode: bool = Form(False, description="Enable warm historical vintage photo mode"),
 ):
     """Colorizes legacy black & white photographs."""
     contents = await file.read()
@@ -25,6 +26,10 @@ async def colorize_image(
     result = await image_service.process_image_enhancement(
         file_bytes=contents,
         filename=filename,
-        pipeline_options={"mode": "colorize", "render_factor": render_factor},
+        pipeline_options={
+            "mode": "colorize",
+            "render_factor": render_factor,
+            "vintage_mode": vintage_mode,
+        },
     )
     return result

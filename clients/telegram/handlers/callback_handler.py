@@ -26,6 +26,7 @@ ENDPOINT_MAPPING = {
     "ai_upscale_4x": "/upscale?scale=4",
     "ai_sharpen": "/sharpen",
     "ai_colorize": "/colorize",
+    "ai_colorize_vintage": "/colorize?vintage_mode=true",
     "ai_compress": "/compress",
 }
 

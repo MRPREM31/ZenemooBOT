@@ -110,8 +110,9 @@ class ImageService:
                         from ai.colorize import colorize_engine
                         from ai.compress import compress_engine
                         render_factor = int(options.get("render_factor", 35))
+                        vintage_mode = bool(options.get("vintage_mode", False))
                         input_pil = Image.open(io.BytesIO(file_bytes))
-                        result_pil = colorize_engine.colorize(input_pil, render_factor=render_factor)
+                        result_pil = colorize_engine.colorize(input_pil, render_factor=render_factor, vintage_mode=vintage_mode)
                         opt_bytes, _ = compress_engine.optimize_output(result_pil, target_format="JPEG", jpeg_quality=95)
                         return opt_bytes
                     elif mode == "compress":
