@@ -121,6 +121,38 @@ class ImageService:
                         fmt = options.get("output_format")
                         opt_bytes, _ = compress_engine.optimize_output(file_bytes, target_format=fmt, jpeg_quality=quality)
                         return opt_bytes
+                    elif mode == "passport":
+                        from ai.passport import passport_engine
+                        from ai.compress import compress_engine
+                        country = options.get("country", "india")
+                        bg_color = options.get("bg_color", "white")
+                        input_pil = Image.open(io.BytesIO(file_bytes))
+                        result_pil, _ = passport_engine.generate_passport(input_pil, country=country, bg_color_name=bg_color)
+                        opt_bytes, _ = compress_engine.optimize_output(result_pil, target_format="PNG")
+                        return opt_bytes
+                    elif mode == "night":
+                        from ai.night import night_engine
+                        from ai.compress import compress_engine
+                        input_pil = Image.open(io.BytesIO(file_bytes))
+                        result_pil, _ = night_engine.enhance_night_photo(input_pil)
+                        opt_bytes, _ = compress_engine.optimize_output(result_pil, target_format="JPEG", jpeg_quality=95)
+                        return opt_bytes
+                    elif mode == "portrait_studio":
+                        from ai.portrait import portrait_engine
+                        from ai.compress import compress_engine
+                        portrait_mode = options.get("portrait_mode", "linkedin")
+                        input_pil = Image.open(io.BytesIO(file_bytes))
+                        result_pil, _ = portrait_engine.enhance_portrait(input_pil, mode=portrait_mode)
+                        opt_bytes, _ = compress_engine.optimize_output(result_pil, target_format="JPEG", jpeg_quality=95)
+                        return opt_bytes
+                    elif mode == "cartoon":
+                        from ai.cartoon import cartoon_engine
+                        from ai.compress import compress_engine
+                        style = options.get("cartoon_style", "anime")
+                        input_pil = Image.open(io.BytesIO(file_bytes))
+                        result_pil, _ = cartoon_engine.stylize_image(input_pil, style=style)
+                        opt_bytes, _ = compress_engine.optimize_output(result_pil, target_format="PNG")
+                        return opt_bytes
                     elif mode == "object_remove":
                         from ai.object_remove import lama_engine
                         from ai.compress import compress_engine

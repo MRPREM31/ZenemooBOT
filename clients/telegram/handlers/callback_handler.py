@@ -18,6 +18,10 @@ from shared.exceptions.telegram_exception import TelegramBackendCommunicationExc
 
 # Mapping callback_data to backend API endpoint path
 ENDPOINT_MAPPING = {
+    "ai_passport": "/passport-studio",
+    "ai_night": "/night-enhance",
+    "ai_portrait": "/portrait-studio",
+    "ai_cartoon": "/cartoon-studio",
     "ai_enhance": "/enhance",
     "ai_removebg": "/remove-bg",
     "ai_restore_gfp": "/restore?model=gfpgan",

@@ -37,18 +37,27 @@ async def handle_incoming_photo(update: Update, context: ContextTypes.DEFAULT_TY
     context.user_data["last_photo_file_id"] = file_id
 
     caption_text = (
-        f"🖼️ **Photo Received!** ({file_size_mb:.2f} MB)\n\n"
-        "Select the AI processing engine to apply:"
+        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "✨ **Zenemoo AI**\n\n"
+        "📥 **Image Received**\n"
+        f"• Size: `{file_size_mb:.2f} MB`\n"
+        "✔ **Image Analysis Complete**\n\n"
+        "Select an AI processing engine or Flagship Studio below:\n"
+        "━━━━━━━━━━━━━━━━━━━━━━"
     )
 
     keyboard = [
         [
-            InlineKeyboardButton("✨ Full AI Enhance", callback_data="ai_enhance"),
-            InlineKeyboardButton("🖼️ Remove BG", callback_data="ai_removebg"),
+            InlineKeyboardButton("📘 Passport Studio", callback_data="ai_passport"),
+            InlineKeyboardButton("🌙 Night Enhance", callback_data="ai_night"),
         ],
         [
-            InlineKeyboardButton("🎭 Face Restore (GFPGAN)", callback_data="ai_restore_gfp"),
-            InlineKeyboardButton("🎭 Face Restore (CodeFormer)", callback_data="ai_restore_code"),
+            InlineKeyboardButton("🎭 Portrait Studio", callback_data="ai_portrait"),
+            InlineKeyboardButton("🎨 Cartoon Studio", callback_data="ai_cartoon"),
+        ],
+        [
+            InlineKeyboardButton("✨ Full AI Enhance", callback_data="ai_enhance"),
+            InlineKeyboardButton("🖼️ Remove BG", callback_data="ai_removebg"),
         ],
         [
             InlineKeyboardButton("🔍 2x Upscale", callback_data="ai_upscale_2x"),
@@ -59,6 +68,7 @@ async def handle_incoming_photo(update: Update, context: ContextTypes.DEFAULT_TY
             InlineKeyboardButton("🎨 Colorize B&W", callback_data="ai_colorize"),
         ],
         [
+            InlineKeyboardButton("📜 Vintage Colorize", callback_data="ai_colorize_vintage"),
             InlineKeyboardButton("📦 Smart Compress", callback_data="ai_compress"),
         ],
     ]

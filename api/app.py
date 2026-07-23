@@ -25,6 +25,10 @@ from api.routes import (
     colorize_router,
     auth_router,
     admin_router,
+    passport_router,
+    night_router,
+    portrait_router,
+    cartoon_router,
 )
 
 
@@ -76,6 +80,10 @@ def create_app() -> FastAPI:
     app.include_router(upscale_router)
     app.include_router(compress_router)
     app.include_router(colorize_router)
+    app.include_router(passport_router)
+    app.include_router(night_router)
+    app.include_router(portrait_router)
+    app.include_router(cartoon_router)
 
     # Custom Exception Handlers
     @app.exception_handler(ImageProcessingException)

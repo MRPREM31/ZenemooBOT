@@ -11,6 +11,10 @@ from .compress_route import router as compress_router
 from .colorize_route import router as colorize_router
 from .auth_route import router as auth_router
 from .admin_route import router as admin_router
+from .passport_route import router as passport_router
+from .night_route import router as night_router
+from .portrait_route import router as portrait_router
+from .cartoon_route import router as cartoon_router
 
 __all__ = [
     "health_router",
@@ -22,4 +26,8 @@ __all__ = [
     "colorize_router",
     "auth_router",
     "admin_router",
+    "passport_router",
+    "night_router",
+    "portrait_router",
+    "cartoon_router",
 ]
