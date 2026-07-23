@@ -12,15 +12,16 @@
 
 ## 🌟 Key Features
 
-1. **🎭 Face Restoration**: Low-resolution portrait sharpening and facial landmark reconstruction using **GFPGAN v1.4** and **CodeFormer** (with adjustable fidelity controls).
-2. **🔍 Super Resolution Upscaling**: High-definition 2x and 4x image upscaling powered by **Real-ESRGAN**.
-3. **🖼️ Automatic Background Removal**: Transparent PNG mask generation and alpha matting powered by **rembg** (U²-Net).
-4. **⚡ Denoising & Sharpening**: Adaptive unsharp masking and noise reduction using **SwinIR** & OpenCV.
-5. **🎨 Black & White Colorization**: Legacy photo colorization powered by **DeOldify**.
-6. **🪄 Object Removal / Inpainting**: Deep learning mask-based object removal powered by **LaMa**.
-7. **📦 Smart Compression**: Intelligent WebP/JPEG/PNG format optimization.
-8. **📊 Web Admin Dashboard**: Real-time telemetry monitoring total users, processed image counts, PyTorch GPU/VRAM memory usage, CPU/RAM stats, storage disk breakdown, and live processing audit logs.
-9. **🤖 Decoupled Telegram Bot Client**: High-performance bot client (`python-telegram-bot` v22+) communicating **exclusively via REST API** with the backend.
+1. **🎭 Intelligent Face Enhancement**: Multi-face detection, per-face quality scoring ($Q \in [0.0, 1.0]$), and adaptive pipeline selection (`excellent` $\to$ skip restoration, `medium` $\to$ GFPGAN light, `poor` $\to$ CodeFormer adaptive fidelity $w \in [0.30, 0.85]$, `very_poor` $\to$ GFPGAN + CodeFormer dual pass). Features independent 30% margin face cropping, Gaussian elliptical mask blending, 20% natural skin texture preservation (zero plastic skin), and post-restoration quality auto-retry fallback.
+2. **🖼️ Production-Grade Background Removal**: Multi-model classification engine (`portrait` $\to$ `u2net_human_seg` / `bria-rmbg-2.0`, `product` $\to$ `isnet-general-use`, `anime` $\to$ `isnet-anime`, `general` $\to$ `u2net`). Includes facial feature protection (prevents missing ears/fingers), OpenCV Fast Guided Filter matting, high-pass hair detail preservation, 1–2 px feathering, confidence quality scoring ($S \in [0.0, 1.0]$), and automatic retry fallback.
+3. **🎨 Natural B&W Photo Colorization & Restoration**: DDColor / DeOldify neural colorization integrated with pre-processing (denoising, pre-face restoration, low-res upscaling), CIE Lab color normalization (Gray World white balance, human skin tone bounds $a^* \in [3, 22]$, red cast reduction, $Y$ luminance channel re-injection for 100% sharpness preservation), post-colorization face refinement, low confidence fallback, and optional **Vintage Mode** for warm historical aesthetics.
+4. **⚡ Parallel GPU Processing & Intelligent AI Scheduler**: Concurrency engine with `MAX_GPU_WORKERS = 3` parallel worker pool and mode-specific semaphores (Fast 2x limit 2, Full HQ 4x limit 1, Background removal limit 3). Features pre-job dynamic admission checks (**Free VRAM > 1.5 GB**, **GPU Util < 90%**, **Temp < 80°C**), dynamic thermal worker scaling, pipeline parallelism, smart stage skipping, and dynamic VRAM tile sizing (256px to 1024px).
+5. **🔍 Super Resolution Upscaling**: High-definition 2x and 4x image upscaling powered by **Real-ESRGAN** with dynamic tile allocation based on available VRAM.
+6. **⚡ Denoising & Sharpening**: Adaptive unsharp masking and noise reduction using **SwinIR** & OpenCV.
+7. **🪄 Object Removal / Inpainting**: Deep learning mask-based object removal powered by **LaMa**.
+8. **📦 Smart Compression**: Intelligent WebP/JPEG/PNG format optimization.
+9. **📊 Web Admin Dashboard**: Real-time telemetry monitoring total users, processed image counts, PyTorch GPU/VRAM memory usage, CPU/RAM stats, storage disk breakdown, and live processing audit logs.
+10. **🤖 Decoupled Telegram Bot Client**: High-performance bot client (`python-telegram-bot` v22+) communicating **exclusively via REST API** with the backend.
 
 ---
 
@@ -34,20 +35,21 @@ graph TD
     TG -->|Async REST Client| API[FastAPI Backend Server :8000]
     REST -->|Fetch Stats & Submit Jobs| API
 
-    subgraph Backend Core
+    subgraph Backend Core & Scheduler
         API --> Auth[JWT Security & OAuth2]
         API --> SVC[Business Services Layer]
         SVC --> DB[(Database: SQLite / PostgreSQL)]
-        SVC --> Pipe[Unified AI Enhancer Pipeline]
+        SVC --> SCHED[Intelligent AI Scheduler : Telemetry & Admission]
+        SCHED --> QUEUE[Parallel GPU Queue : Max 3 Workers]
     end
 
-    subgraph AI Processing Engines
-        Pipe --> BG[Background Removal : rembg]
-        Pipe --> Face[Face Restoration : GFPGAN / CodeFormer]
-        Pipe --> SR[Super Resolution : Real-ESRGAN]
-        Pipe --> Sharp[Denoise & Sharpen : SwinIR]
-        Pipe --> Color[Colorization : DeOldify]
-        Pipe --> Inpaint[Object Removal : LaMa]
+    subgraph AI Processing Engines & Pipelines
+        QUEUE --> BG[Multi-Model BG Removal : RMBG 2.0 / IS-Net / U2-Net + Guided Filter]
+        QUEUE --> Face[Intelligent Face Restoration : GFPGAN / CodeFormer + Skin Texture Preservation]
+        QUEUE --> SR[Super Resolution : Real-ESRGAN Dynamic Tiling]
+        QUEUE --> Sharp[Denoise & Sharpen : SwinIR]
+        QUEUE --> Color[DDColor Natural Colorization : Lab Normalization + Vintage Mode]
+        QUEUE --> Inpaint[Object Removal : LaMa]
     end
 ```
 
